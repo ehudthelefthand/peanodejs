@@ -1,24 +1,15 @@
-import express from "express";
-import prisma from "./db";
+import express, { NextFunction, Request, Response } from "express";
+import userRouter from "./handler/user";
 
 const app = express();
 
-app.get("/hello/:name", (req, res) => {
-  res.json({
-    name: req.params.name,
-    key: req.query.key,
-    foo: req.query.foo,
-  });
-});
+app.use(express.json());
 
-app.post("/users", async (req, res) => {
-  await prisma.user.create({
-    data: {
-      username: "pongneng",
-      password: "shhhh!",
-    },
-  });
-  res.sendStatus(200);
+app.use("/api/v1", userRouter);
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log("catch error!");
+  res.end();
 });
 
 app.put("/", (req, res) => {});
