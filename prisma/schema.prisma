@@ -11,7 +11,43 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  username String
-  password String
+  id             String           @id @default(uuid())
+  username       String           @unique
+  password       String
+  role           Role             @default(STUDENT)
+  studenProfile  StudenProfile?
+  studenOnCourses StudenOnCourse[]
 }
+
+model StudenProfile {
+  id          String @id @default(uuid())
+  companyName String
+  jobTitle    String
+  level       String
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  STUDENT
+  TRAINER
+  ADMIN
+}
+
+model Course {
+  id             String           @id @default(uuid())
+  name           String           @db.VarChar(255)
+  description    String
+  studenOnCourses StudenOnCourse[]
+}
+
+model StudenOnCourse {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  cousreId String
+  course   Course @relation(fields: [cousreId], references: [id])
+}
+
+
+
