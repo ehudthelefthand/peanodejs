@@ -25,7 +25,7 @@ jest.mock("../../repository/user", () => {
 });
 
 describe("Profile ", () => {
-  describe("POST /api/v1/profiles", () => {
+  describe("PUT /api/v1/profiles", () => {
     test("Valid body", async () => {
       const token = generateToken({ id: "1" });
 
@@ -47,8 +47,8 @@ describe("Profile ", () => {
 
       const res = await request(app)
         .put("/api/v1/profiles")
-        .set("Authorization", `Bearer ${token}`)
-        .send(profile);
+        .send(profile)
+        .set("Authorization", `Bearer ${token}`);
 
       expect(res.statusCode).toEqual(400);
       expect(res.body).toHaveProperty("message");

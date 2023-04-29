@@ -16,17 +16,25 @@ export default function (router: Router) {
         },
       });
 
-      // const courses = await prisma.class.findMany({
-      //   where: {
-      //     userId: req.user.id,
-      //   },
-      //   include: {
-      //     course: true,
-      //   },
-      // });
+      const courses = await prisma.student.findMany({
+        where: {
+          studentId: req.user.id,
+        },
+        include: {
+          class: {
+            include: {
+              course: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
       res.json({
         profile,
-        // courses,
+        courses,
       });
     })
   );

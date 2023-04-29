@@ -40,8 +40,6 @@ courseRouter(v1);
 classRouter(v1);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  logger.error(err);
-
   if (err instanceof ZodError) {
     res.status(400).json({
       message: fromZodError(err),
