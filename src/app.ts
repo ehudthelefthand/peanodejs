@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import morgan from "morgan";
 import logger from "./util/logger";
 import multer from "multer";
+import { fromZodError } from "zod-validation-error";
 
 const app = express();
 
@@ -31,11 +32,10 @@ v1.use("/", profileRouter);
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ZodError) {
     res.status(400).json({
-      message: err,
+      message: fromZodError(err),
     });
     return;
   }
-  logger.error(err.message);
   res.status(500).json({
     message: "unexpected error",
   });

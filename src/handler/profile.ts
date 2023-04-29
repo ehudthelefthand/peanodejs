@@ -52,7 +52,6 @@ router.put("/profiles", auth, logBody, async (req, res, next) => {
       profile,
     });
   } catch (err) {
-    logger.error(err);
     next(err);
   }
 });

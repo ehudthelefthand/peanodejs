@@ -1,5 +1,3 @@
-import * as ProfileRepo from "../../repository/profile";
-import * as UserReop from "../../repository/user";
 import request from "supertest";
 import app from "../../app";
 import { generateToken } from "../../util/token";
@@ -26,18 +24,34 @@ jest.mock("../../repository/user", () => {
   };
 });
 
-describe("Profile", () => {
-  test("POST /api/v1/profiles", async () => {
-    const token = generateToken({ id: "1" });
+describe("Profile ", () => {
+  describe("POST /api/v1/profiles", () => {
+    test("Valid body", async () => {
+      const token = generateToken({ id: "1" });
 
-    const res = await request(app)
-      .put("/api/v1/profiles")
-      .set("Authorization", `Bearer ${token}`)
-      .send(profile);
+      const res = await request(app)
+        .put("/api/v1/profiles")
+        .set("Authorization", `Bearer ${token}`)
+        .send(profile);
 
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty("profile.companyName");
-    expect(res.body).toHaveProperty("profile.jobTitle");
-    expect(res.body).toHaveProperty("profile.level");
+      expect(res.statusCode).toEqual(200);
+      expect(res.body).toHaveProperty("profile.companyName");
+      expect(res.body).toHaveProperty("profile.jobTitle");
+      expect(res.body).toHaveProperty("profile.level");
+    });
+
+    test("Invalid body", async () => {
+      const token = generateToken({ id: "1" });
+
+      delete profile["companyName"];
+
+      const res = await request(app)
+        .put("/api/v1/profiles")
+        .set("Authorization", `Bearer ${token}`)
+        .send(profile);
+
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty("message");
+    });
   });
 });
