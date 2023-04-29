@@ -1,29 +1,39 @@
-import express from "express";
+import { Router } from "express";
 import prisma from "../db";
-import { Role } from "@prisma/client";
 import { auth } from "../middleware";
+import z from "zod";
 
-const router = express.Router();
+export default function (router: Router) {
+  const enrollSchema = z.object({
+    classId: z.string().refine(async (id) => {
+      const found = await prisma.class.findUnique({
+        where: { id },
+      });
+      return !!found;
+    }),
+    studentId: z.string().refine(async (id) => {
+      const found = await prisma.user.findUnique({
+        where: { id },
+      });
+      return !!found;
+    }),
+  });
 
-router.get("/students", auth, async (req, res, next) => {
-  try {
-    const students = await prisma.user.findMany({
-      select: {
-        id: true,
-        username: true,
-        role: true,
-      },
-      where: {
-        role: Role.STUDENT,
-      },
-    });
-    res.json({
-      students,
-    });
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-});
-
-export default router;
+  router.post("/students", auth, async (req, res, next) => {
+    try {
+      const { classId } = await enrollSchema.parseAsync(req.body);
+      const students = await prisma.student.create({
+        data: {
+          classId,
+          studentId: req.user.id,
+        },
+      });
+      res.json({
+        students,
+      });
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  });
+}

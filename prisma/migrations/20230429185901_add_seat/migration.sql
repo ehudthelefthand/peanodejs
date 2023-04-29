@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Class" ADD COLUMN     "seats" INTEGER NOT NULL DEFAULT 0;

@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import userRouter from "./handler/user";
 import studentRouter from "./handler/student";
 import profileRouter from "./handler/profile";
+import courseRouter from "./handler/course";
+import classRouter from "./handler/class";
 import { ZodError } from "zod";
 import morgan from "morgan";
 import logger from "./util/logger";
@@ -25,9 +27,11 @@ const v1 = express.Router();
 
 app.use("/api/v1", v1);
 
-v1.use("/", userRouter);
-v1.use("/", studentRouter);
-v1.use("/", profileRouter);
+userRouter(v1);
+studentRouter(v1);
+profileRouter(v1);
+courseRouter(v1);
+classRouter(v1);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ZodError) {

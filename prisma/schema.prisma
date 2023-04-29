@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id             String           @id @default(uuid())
-  username       String           @unique
-  password       String
-  role           Role             @default(STUDENT)
-  studenProfile  StudenProfile?
-  studenOnCourses StudenOnCourse[]
+  id            String         @id @default(uuid())
+  username      String         @unique
+  password      String
+  role          Role           @default(STUDENT)
+  studenProfile StudenProfile?
+  trains        Class[]
+  studies       Student[]
 }
 
 model StudenProfile {
@@ -35,19 +36,30 @@ enum Role {
 }
 
 model Course {
-  id             String           @id @default(uuid())
-  name           String           @db.VarChar(255)
-  description    String
-  studenOnCourses StudenOnCourse[]
+  id          String  @id @default(uuid())
+  name        String  @db.VarChar(255)
+  description String
+  classes     Class[]
 }
 
-model StudenOnCourse {
+model Class {
+  id        String    @id @default(uuid())
+  trainerId String
+  trainer   User      @relation(fields: [trainerId], references: [id])
+  courseId  String
+  course    Course    @relation(fields: [courseId], references: [id])
+  start     DateTime
+  end       DateTime
+  students  Student[]
+  seats     Int       @default(0)
+}
+
+model Student {
   id       String @id @default(uuid())
-  userId   String
-  user     User   @relation(fields: [userId], references: [id])
-  cousreId String
-  course   Course @relation(fields: [cousreId], references: [id])
+  classId  String
+  class    Class  @relation(fields: [classId], references: [id])
+  studentId String
+  student  User   @relation(fields: [studentId], references: [id])
+
+  @@unique([classId, studentId])
 }
-
-
-
