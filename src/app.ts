@@ -13,13 +13,16 @@ app.use("/api/v1", studentRouter);
 app.use("/api/v1", profileRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.log("catch error!");
   if (err instanceof ZodError) {
     res.status(400).json({
       message: err,
     });
+    return;
   }
-  res.end();
+  console.error(err);
+  res.status(500).json({
+    message: "unexpected error",
+  });
 });
 
 app.put("/", (req, res) => {});

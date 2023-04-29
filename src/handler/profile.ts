@@ -2,11 +2,14 @@ import express from "express";
 import { auth } from "../middleware";
 import prisma from "../db";
 import z from "zod";
+import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 
-router.get("/profiles", auth, async (req, res, next) => {
-  try {
+router.get(
+  "/profiles",
+  auth,
+  asyncHandler(async (req, res, next) => {
     const profile = await prisma.studenProfile.findUnique({
       where: {
         userId: req.user.id,
@@ -24,11 +27,8 @@ router.get("/profiles", auth, async (req, res, next) => {
       profile,
       courses,
     });
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-});
+  })
+);
 
 const profileSchema = z.object({
   companyName: z.string(),
