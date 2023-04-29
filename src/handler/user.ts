@@ -24,7 +24,36 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.post("login", (req, res) => {});
+router.post("/login", async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    const found = await prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+    if (!found) {
+      res.status(401).json({
+        message: "unauthorized",
+      });
+      return;
+    }
+    const valid = await bcrypt.compare(password, found.password);
+    if (!valid) {
+      res.status(401).json({
+        message: "unauthorized",
+      });
+      return;
+    }
+    res.status(200).json({
+      token: generateToken({ id: found.id }),
+    });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 router.post("logout", (req, res) => {});
 
 export default router;
