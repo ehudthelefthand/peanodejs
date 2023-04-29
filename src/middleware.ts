@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "./db";
 import { verifyToken } from "./util/token";
+import logger from "./util/logger";
 
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   const bearer = req.headers.authorization;
@@ -40,4 +41,9 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       message: "oop! something went wrong",
     });
   }
+};
+
+export const logBody = (req: Request, res: Response, next: NextFunction) => {
+  logger.info(req.body);
+  next();
 };

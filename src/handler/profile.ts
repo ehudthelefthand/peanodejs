@@ -1,5 +1,5 @@
 import express from "express";
-import { auth } from "../middleware";
+import { auth, logBody } from "../middleware";
 import prisma from "../db";
 import z from "zod";
 import asyncHandler from "express-async-handler";
@@ -16,8 +16,6 @@ router.get(
         userId: req.user.id,
       },
     });
-
-    throw new Error("Pongneng err!");
 
     const courses = await prisma.studenOnCourse.findMany({
       where: {
@@ -40,7 +38,7 @@ const profileSchema = z.object({
   level: z.string(),
 });
 
-router.put("/profiles", auth, async (req, res, next) => {
+router.put("/profiles", auth, logBody, async (req, res, next) => {
   try {
     const { companyName, jobTitle, level } = profileSchema.parse(req.body);
     const profile = await prisma.studenProfile.upsert({
