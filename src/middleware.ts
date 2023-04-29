@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "./db";
-import { verifyToken } from "./until/token";
+import { verifyToken } from "./util/token";
 
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   const bearer = req.headers.authorization;

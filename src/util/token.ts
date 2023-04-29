@@ -9,9 +9,3 @@ export const generateToken = ({ id }: { id: string }) => {
 export const verifyToken = (token: string) => {
   return <jwt.MyJwtPayload>jwt.verify(token, secretKey);
 };
-
-declare module "jsonwebtoken" {
-  export interface MyJwtPayload extends JwtPayload {
-    id: string;
-  }
-}
