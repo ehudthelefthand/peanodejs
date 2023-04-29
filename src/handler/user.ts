@@ -2,6 +2,7 @@ import express from "express";
 import prisma from "../db";
 import bcrypt from "bcrypt";
 import { generateToken } from "../until/token";
+import { auth } from "../middleware";
 
 const router = express.Router();
 
@@ -53,7 +54,5 @@ router.post("/login", async (req, res, next) => {
     next(err);
   }
 });
-
-router.post("logout", (req, res) => {});
 
 export default router;
