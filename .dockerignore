@@ -1,7 +1,9 @@
-node_modules
 Dockerfile
+docker-compose.yml
 build
 coverage
 data
 log
+node_modules
 .env
+uploads
