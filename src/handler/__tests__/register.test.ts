@@ -2,8 +2,6 @@ import request from "supertest";
 import prisma from "../../db";
 import app from "../../app";
 
-jest.fn();
-
 describe("Register", () => {
   beforeEach(async () => {
     await prisma.$transaction([

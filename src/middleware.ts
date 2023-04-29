@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import prisma from "./db";
 import { verifyToken } from "./util/token";
 import logger from "./util/logger";
+import { getUserById } from "./repository/user";
 
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   const bearer = req.headers.authorization;
@@ -23,11 +23,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const payload = verifyToken(token);
     const { id } = payload;
-    const user = await prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
+    const user = await getUserById(id);
     if (!user) {
       res.status(401).json({
         message: "unauthorized",

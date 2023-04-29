@@ -1,36 +1,43 @@
-// jest.mock("../src/repository/profile", () => {
-//   createOrUpdateProfile: () => {
-//     Promise.resolve({});
-//   };
-// });
-
+import * as ProfileRepo from "../../repository/profile";
+import * as UserReop from "../../repository/user";
 import request from "supertest";
 import app from "../../app";
-import prisma from "../../db";
+import { generateToken } from "../../util/token";
+
+const profile = {
+  companyName: "IRRELEVANT",
+  jobTitle: "IRRELEVANT",
+  level: "IRRELEVANT",
+};
+
+jest.mock("../../repository/profile", () => {
+  return {
+    createOrUpdateProfile: jest.fn(() => {
+      return Promise.resolve(profile);
+    }),
+  };
+});
+
+jest.mock("../../repository/user", () => {
+  return {
+    getUserById: jest.fn(() => {
+      return Promise.resolve({ id: "1" });
+    }),
+  };
+});
 
 describe("Profile", () => {
-  beforeEach(async () => {
-    await prisma.$transaction([
-      prisma.studenProfile.deleteMany(),
-      prisma.user.deleteMany(),
-    ]);
-  });
-
   test("POST /api/v1/profiles", async () => {
-    const registerRes = await request(app).post("/api/v1/register").send({
-      username: "pongneng",
-      password: "supersecret",
-    });
+    const token = generateToken({ id: "1" });
 
     const res = await request(app)
       .put("/api/v1/profiles")
-      .send({
-        companyName: "ODDS",
-        jobTitle: "Frontend Dev",
-        level: "Senior",
-      })
-      .set("Authorization", "Bearer " + registerRes.body.token);
+      .set("Authorization", `Bearer ${token}`)
+      .send(profile);
 
     expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("profile.companyName");
+    expect(res.body).toHaveProperty("profile.jobTitle");
+    expect(res.body).toHaveProperty("profile.level");
   });
 });

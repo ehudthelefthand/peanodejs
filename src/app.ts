@@ -14,14 +14,19 @@ app.use(morgan("dev"));
 
 const upload = multer({ dest: "uploads/" });
 
+// Example of file upload
 app.post("/photos/upload", upload.single("avatar"), (req, res) => {
   logger.info(req.file);
   res.end();
 });
 
-app.use("/api/v1", userRouter);
-app.use("/api/v1", studentRouter);
-app.use("/api/v1", profileRouter);
+const v1 = express.Router();
+
+app.use("/api/v1", v1);
+
+v1.use("/", userRouter);
+v1.use("/", studentRouter);
+v1.use("/", profileRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ZodError) {
