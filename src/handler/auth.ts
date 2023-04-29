@@ -2,6 +2,7 @@ import { Router } from "express";
 import prisma from "../db";
 import bcrypt from "bcrypt";
 import { generateToken } from "../util/token";
+import logger from "../util/logger";
 
 export default function (router: Router) {
   router.post("/register", async (req, res, next) => {
@@ -18,7 +19,6 @@ export default function (router: Router) {
         token: generateToken({ id: user.id }),
       });
     } catch (err) {
-      console.error(err);
       next(err);
     }
   });
@@ -48,7 +48,6 @@ export default function (router: Router) {
         token: generateToken({ id: found.id }),
       });
     } catch (err) {
-      console.error(err);
       next(err);
     }
   });

@@ -13,10 +13,14 @@ jest.mock("../../repository/user", () => {
 
 describe("Course", () => {
   beforeAll(async () => {
-    await prisma.$transaction([prisma.course.deleteMany()]);
-  });
-  afterAll(async () => {
-    await prisma.$transaction([prisma.course.deleteMany()]);
+    await prisma.$transaction([
+      prisma.student.deleteMany(),
+      prisma.class.deleteMany(),
+      prisma.course.deleteMany(),
+      prisma.studenProfile.deleteMany(),
+      prisma.user.deleteMany(),
+    ]);
+    await prisma.$disconnect();
   });
   describe("POST /api/v1/coures", () => {
     test("Valid body", async () => {

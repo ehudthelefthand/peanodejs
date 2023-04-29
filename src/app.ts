@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-import userRouter from "./handler/user";
+import userRouter from "./handler/auth";
 import studentRouter from "./handler/student";
 import profileRouter from "./handler/profile";
 import courseRouter from "./handler/course";
@@ -13,7 +13,13 @@ import { fromZodError } from "zod-validation-error";
 const app = express();
 
 app.use(express.json());
-app.use(morgan("dev"));
+app.use(
+  morgan("dev", {
+    stream: {
+      write: (message) => logger.http(message.trim()),
+    },
+  })
+);
 
 const upload = multer({ dest: "uploads/" });
 
@@ -34,12 +40,15 @@ courseRouter(v1);
 classRouter(v1);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  logger.error(err);
+
   if (err instanceof ZodError) {
     res.status(400).json({
       message: fromZodError(err),
     });
     return;
   }
+
   res.status(500).json({
     message: "unexpected error",
   });
