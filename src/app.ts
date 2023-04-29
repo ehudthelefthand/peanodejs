@@ -3,10 +3,13 @@ import userRouter from "./handler/user";
 import studentRouter from "./handler/student";
 import profileRouter from "./handler/profile";
 import { ZodError } from "zod";
+import morgan from "morgan";
+import logger from "./util/logger";
 
 const app = express();
 
 app.use(express.json());
+app.use(morgan("dev"));
 
 app.use("/api/v1", userRouter);
 app.use("/api/v1", studentRouter);
@@ -19,7 +22,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     });
     return;
   }
-  console.error(err);
+  logger.error(err.message);
   res.status(500).json({
     message: "unexpected error",
   });

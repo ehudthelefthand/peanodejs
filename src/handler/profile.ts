@@ -3,6 +3,7 @@ import { auth } from "../middleware";
 import prisma from "../db";
 import z from "zod";
 import asyncHandler from "express-async-handler";
+import logger from "../util/logger";
 
 const router = express.Router();
 
@@ -15,6 +16,9 @@ router.get(
         userId: req.user.id,
       },
     });
+
+    throw new Error("Pongneng err!");
+
     const courses = await prisma.studenOnCourse.findMany({
       where: {
         userId: req.user.id,
@@ -41,7 +45,7 @@ router.put("/profiles", auth, async (req, res, next) => {
     const { companyName, jobTitle, level } = profileSchema.parse(req.body);
     const profile = await prisma.studenProfile.upsert({
       where: {
-        id: req.user.id,
+        userId: req.user.id,
       },
       update: {
         companyName: companyName,
@@ -59,7 +63,7 @@ router.put("/profiles", auth, async (req, res, next) => {
       profile,
     });
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     next(err);
   }
 });
