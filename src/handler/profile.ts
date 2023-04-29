@@ -1,6 +1,7 @@
 import express from "express";
 import { auth } from "../middleware";
 import prisma from "../db";
+import z from "zod";
 
 const router = express.Router();
 
@@ -29,9 +30,15 @@ router.get("/profiles", auth, async (req, res, next) => {
   }
 });
 
+const profileSchema = z.object({
+  companyName: z.string(),
+  jobTitle: z.string(),
+  level: z.string(),
+});
+
 router.put("/profiles", auth, async (req, res, next) => {
   try {
-    const { companyName, jobTitle, level } = req.body;
+    const { companyName, jobTitle, level } = profileSchema.parse(req.body);
     const profile = await prisma.studenProfile.upsert({
       where: {
         id: req.user.id,
