@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -16,4 +16,5 @@ export default {
     es6: true,
     node: true,
   },
+  exclude: [".eslintrc.js"],
 };

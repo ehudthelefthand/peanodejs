@@ -5,11 +5,19 @@ import profileRouter from "./handler/profile";
 import { ZodError } from "zod";
 import morgan from "morgan";
 import logger from "./util/logger";
+import multer from "multer";
 
 const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
+
+const upload = multer({ dest: "uploads/" });
+
+app.post("/photos/upload", upload.single("avatar"), (req, res) => {
+  logger.info(req.file);
+  res.end();
+});
 
 app.use("/api/v1", userRouter);
 app.use("/api/v1", studentRouter);

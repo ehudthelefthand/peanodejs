@@ -2,7 +2,6 @@ import express from "express";
 import prisma from "../db";
 import bcrypt from "bcrypt";
 import { generateToken } from "../util/token";
-import { auth } from "../middleware";
 
 const router = express.Router();
 
@@ -21,7 +20,7 @@ router.post("/register", async (req, res, next) => {
     });
   } catch (err) {
     console.error(err);
-    next();
+    next(err);
   }
 });
 

@@ -1,7 +1,8 @@
-import { describe, expect, test, beforeEach } from "@jest/globals";
 import request from "supertest";
-import app from "../src/app";
-import prisma from "../src/db";
+import prisma from "../../db";
+import app from "../../app";
+
+jest.fn();
 
 describe("Register", () => {
   beforeEach(async () => {

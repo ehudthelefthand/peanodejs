@@ -1,7 +1,12 @@
-import { describe, expect, test, beforeEach } from "@jest/globals";
+// jest.mock("../src/repository/profile", () => {
+//   createOrUpdateProfile: () => {
+//     Promise.resolve({});
+//   };
+// });
+
 import request from "supertest";
-import app from "../src/app";
-import prisma from "../src/db";
+import app from "../../app";
+import prisma from "../../db";
 
 describe("Profile", () => {
   beforeEach(async () => {
