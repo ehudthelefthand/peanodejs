@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  postgresql:
+    image: postgres:12
+    restart: always
+    environment:
+      - POSTGRES_USER=peanodejs
+      - POSTGRES_PASSWORD=supersecret
+      - POSTGRES_DB=peanodejs
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "54327:5432"
+  course-api:
+    image: c1
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://peanodejs:supersecret@postgresql:5432/peanodejs?schema=public
+    ports:
+      - "3004:3009"
+    depends_on:
+      - postgresql

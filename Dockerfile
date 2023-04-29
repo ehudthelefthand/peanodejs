@@ -6,4 +6,4 @@ COPY package-lock.json .
 COPY . .
 RUN npm install && npx prisma generate
 RUN npm run build
-CMD ["node", "build/server.js"]
+CMD ["npm", "start"]

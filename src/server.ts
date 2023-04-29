@@ -1,5 +1,7 @@
 import app from "./app";
 
-app.listen(3009, () => {
-  console.log("server started on http://localhost:3009");
+const port = process.env.PORT || 3009;
+
+app.listen(port, () => {
+  console.log(`server started on http://localhost:${port}`);
 });

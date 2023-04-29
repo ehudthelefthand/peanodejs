@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npm run deploy && node ./build/server.js",
     "build": "tsc",
     "dev": "NODE_ENV=develop ts-node-dev ./src/server.ts",
     "format": "prettier --write \"./src/**/*.{js,ts}\"",
     "lint": "eslint \"./src/**/*.{js,ts}\" --quiet",
-    "test": "NODE_ENV=test jest --runInBand"
+    "test": "NODE_ENV=test jest --runInBand",
+    "deploy": "npx prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
