@@ -4,6 +4,7 @@ import prisma from "../db";
 import z from "zod";
 import asyncHandler from "express-async-handler";
 import logger from "../util/logger";
+import { createOrUpdateProfile } from "../repository/profile";
 
 const router = express.Router();
 
@@ -41,21 +42,11 @@ const profileSchema = z.object({
 router.put("/profiles", auth, logBody, async (req, res, next) => {
   try {
     const { companyName, jobTitle, level } = profileSchema.parse(req.body);
-    const profile = await prisma.studenProfile.upsert({
-      where: {
-        userId: req.user.id,
-      },
-      update: {
-        companyName: companyName,
-        jobTitle: jobTitle,
-        level: level,
-      },
-      create: {
-        companyName: companyName,
-        jobTitle: jobTitle,
-        level: level,
-        userId: req.user.id,
-      },
+    const profile = await createOrUpdateProfile({
+      userId: req.user.id,
+      companyName,
+      jobTitle,
+      level,
     });
     res.json({
       profile,
